@@ -1,5 +1,6 @@
 flask
 gunicorn
-flask_socketio
+flask-socketio
+python-socketio
 werkzeug==3.0.3
 datetime
