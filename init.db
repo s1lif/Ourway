@@ -1,0 +1,13 @@
+import sqlite3
+db = '/tmp/eduportal.db'
+conn = sqlite3.connect(db)
+conn.execute('CREATE TABLE IF NOT EXISTS users (...)')
+conn.commit()
+conn.close()
+def init_db():
+    db_path = app.config['DATABASE']
+    os.makedirs(os.path.dirname(db_path), exist_ok=True)
+    
+    with app.app_context():
+        db = sqlite3.connect(db_path)
+        cursor = db.cursor()
