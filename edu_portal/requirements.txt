@@ -1,5 +1,5 @@
 flask
 gunicorn
 flask_socketio
-werkzeug.security
+werkzeug
 sqlite3
