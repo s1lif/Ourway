@@ -4,3 +4,4 @@ flask-socketio
 python-socketio
 werkzeug==2.3.8
 datetime
+Flask-SQLAlchemy==2.0.31
