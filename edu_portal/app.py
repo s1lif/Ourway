@@ -7,7 +7,7 @@ from flask_socketio import SocketIO, emit, join_room, leave_room
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key-here'
-app.config['DATABASE'] = 'static/eduportal.db'
+app.config['DATABASE'] = 'eduportal.db'
 socketio = SocketIO(app, async_mode='threading', cors_allowed_origins="*")
 online_users = set()
 
