@@ -2,6 +2,4 @@ flask
 gunicorn
 flask_socketio
 werkzeug==3.0.3
-os
 datetime
-SocketIO
