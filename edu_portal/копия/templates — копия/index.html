@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Главная страница{% endblock %}
+
+{% block content %}
+<div class="hero-section bg-dark text-white py-5">
+    <div class="container text-center">
+        <h1 class="display-4">Добро пожаловать в EduPortal</h1>
+        <p class="lead">Удобная система для организации учебных занятий между учителями и учениками</p>
+        {% if 'user_id' not in session %}
+            <div class="mt-4">
+                <a href="{{ url_for('register') }}" class="btn btn-light btn-lg me-3">Регистрация</a>
+                <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-lg">Войти</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-person-check fs-1 text-primary"></i>
+                    <h3 class="card-title mt-3">Для учеников</h3>
+                    <p class="card-text">Отправляйте запросы на занятия с учителями, выбирайте удобное время и тему урока.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-person-video3 fs-1 text-primary"></i>
+                    <h3 class="card-title mt-3">Для учителей</h3>
+                    <p class="card-text">Получайте запросы от учеников, управляйте своим расписанием и подтверждайте занятия.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-calendar-check fs-1 text-primary"></i>
+                    <h3 class="card-title mt-3">Удобное расписание</h3>
+                    <p class="card-text">Все запланированные занятия в одном месте с уведомлениями об изменениях.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

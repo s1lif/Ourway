@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Student Requests{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Student Requests</h2>
+    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-primary">
+        <i class="bi bi-arrow-left"></i> Back
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-header bg-dark text-white">
+        <h5 class="mb-0">New Requests</h5>
+    </div>
+    <div class="card-body">
+        {% if not requests %}
+            <div class="alert alert-info">You don't have any new requests yet</div>
+        {% else %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Student</th>
+                            <th>Topic</th>
+                            <th>Preferred time</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for req in requests %}
+                            <tr>
+                                <td>{{ req['created_at'].split(' ')[0] }}</td>
+                                <td>{{ req['student_name'] }}</td>
+                                <td>{{ req['topic'] }}</td>
+                                <td>{{ req['requested_time'].replace('T', ' ') }}</td>
+                                <td>
+                                    <form method="POST" action="{{ url_for('respond_request', request_id=req['id']) }}" class="d-inline">
+                                        <input type="hidden" name="action" value="accept">
+                                        <button type="submit" class="btn btn-sm btn-success me-2">
+                                            <i class="bi bi-check-circle"></i> Accept
+                                        </button>
+                                    </form>
+                                    <button type="button" class="btn btn-sm btn-danger reject-btn"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#rejectModal{{ req.id }}"
+                                            data-request-id="{{ req['id'] }}">
+                                        <i class="bi bi-x-circle"></i> Reject
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% for req in requests %}
+<div class="modal fade" id="rejectModal{{ req.id }}" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Reject Request</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('respond_request', request_id=req.id) }}">
+                <div class="modal-body">
+                    <input type="hidden" name="action" value="reject">
+                    <div class="mb-3">
+                        <label for="message{{ req.id }}" class="form-label">Message to student (optional)</label>
+                        <textarea class="form-control" id="message{{ req.id }}" name="message" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Reject Request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<footer class="bg-dark text-white text-center text-lg-start mt-auto">
+    <div class="text-center p-3">
+        © 2023 EduPortal - Lesson organization system
+    </div>
+</footer>
+{% endblock %}

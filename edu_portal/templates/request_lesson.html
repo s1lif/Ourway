@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Lesson Request{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <h4 class="mb-0">Lesson Request</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('request_lesson') }}">
+                    <div class="mb-3">
+                        <label for="subject" class="form-label">Subject</label>
+                        <select class="form-select" id="subject" name="subject" required onchange="loadTeachers(this.value)">
+                            <option value="" selected disabled>Select subject</option>
+                            {% for subject in subjects %}
+                                {% if subject is string %}
+                                    <option value="{{ subject }}">{{ subject }}</option>
+                                {% elif subject.subject %}
+                                    <option value="{{ subject.subject }}">{{ subject.subject }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="teacher" class="form-label">Teacher</label>
+                        <select class="form-select" id="teacher" name="teacher" required disabled>
+                            <option value="" selected disabled>First select a subject</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="topic" class="form-label">Lesson topic</label>
+                        <input type="text" class="form-control" id="topic" name="topic" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="requested_time" class="form-label">Preferred time</label>
+                        <input type="datetime-local" class="form-control" id="requested_time" name="requested_time" required>
+                    </div>
+                    <button type="submit" class="btn btn-dark w-100">Submit request</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function loadTeachers(subject) {
+    if (!subject) {
+        document.getElementById('teacher').innerHTML = '<option value="" selected disabled>First select a subject</option>';
+        document.getElementById('teacher').disabled = true;
+        return;
+    }
+
+    fetch('/get-teachers/' + encodeURIComponent(subject))
+        .then(response => response.json())
+        .then(data => {
+            const teacherSelect = document.getElementById('teacher');
+            teacherSelect.innerHTML = '';
+
+            if (data.teachers && data.teachers.length === 0) {
+                teacherSelect.innerHTML = '<option value="" selected disabled>No available teachers for this subject</option>';
+                teacherSelect.disabled = true;
+            } else if (data.teachers) {
+                teacherSelect.innerHTML = '<option value="" selected disabled>Select teacher</option>';
+                data.teachers.forEach(teacher => {
+                    const option = document.createElement('option');
+                    option.value = teacher.id;
+                    option.textContent = teacher.username;
+                    teacherSelect.appendChild(option);
+                });
+                teacherSelect.disabled = false;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('teacher').innerHTML = '<option value="" selected disabled>Error loading teachers</option>';
+            document.getElementById('teacher').disabled = true;
+        });
+}
+</script>
+{% endblock %}

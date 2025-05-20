@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Panel{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Admin Panel</h2>
+    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-primary">
+        <i class="bi bi-arrow-left"></i> Back
+    </a>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header bg-danger text-white">
+        <h5 class="mb-0">User Management</h5>
+    </div>
+    <div class="card-body">
+        {% if not users %}
+            <div class="alert alert-info">No users to manage</div>
+        {% else %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Current role</th>
+                            <th>Subject</th>
+                            <th>Registration date</th>
+                            <th>New role</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                            <tr>
+                                <td>{{ user['id'] }}</td>
+                                <td>{{ user['username'] }}</td>
+                                <td>{{ user['email'] }}</td>
+                                <td>
+                                    <span class="badge {% if user['role'] == 'teacher' %}bg-primary{% else %}bg-info{% endif %}">
+                                        {{ 'Teacher' if user['role'] == 'teacher' else 'Student' }}
+                                    </span>
+                                </td>
+                                <td>{{ user['subject'] or '-' }}</td>
+                                <td>{{ user['created_at'].split(' ')[0] }}</td>
+                                <td>
+                                    <form method="POST" action="{{ url_for('update_role', user_id=user['id']) }}" class="d-flex">
+                                        <select name="role" class="form-select form-select-sm me-2" id="roleSelect{{ user['id'] }}" onchange="toggleSubjectField({{ user['id'] }})">
+                                            <option value="teacher" {% if user['role'] == 'teacher' %}selected{% endif %}>Teacher</option>
+                                            <option value="student" {% if user['role'] == 'student' %}selected{% endif %}>Student</option>
+                                        </select>
+                                        <div id="subjectField{{ user['id'] }}" style="display: {% if user['role'] == 'teacher' %}block{% else %}none{% endif %};">
+                                            <select name="subject" class="form-select form-select-sm me-2">
+                                                <option value="">Select subject</option>
+                                                {% for subject in subjects %}
+                                                    <option value="{{ subject }}" {% if user['subject'] == subject %}selected{% endif %}>{{ subject }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="btn btn-sm btn-success">
+                                            <i class="bi bi-check-lg"></i> Save
+                                        </button>
+                                    </form>
+                                </td>
+                                <td>
+                                    <a href="#" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ user['id'] }}">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+
+                                    <div class="modal fade" id="deleteModal{{ user['id'] }}" tabindex="-1">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Delete Confirmation</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Are you sure you want to delete user {{ user['username'] }}?
+                                                    <br><small class="text-muted">This action cannot be undone.</small>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <form method="POST" action="{{ url_for('delete_user', user_id=user['id']) }}">
+                                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function toggleSubjectField(userId) {
+    const roleSelect = document.getElementById('roleSelect' + userId);
+    const subjectField = document.getElementById('subjectField' + userId);
+
+    if (roleSelect.value === 'teacher') {
+        subjectField.style.display = 'block';
+    } else {
+        subjectField.style.display = 'none';
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Панель администратора{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Панель администратора</h2>
+    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-primary">
+        <i class="bi bi-arrow-left"></i> Назад
+    </a>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header bg-danger text-white">
+        <h5 class="mb-0">Управление пользователями</h5>
+    </div>
+    <div class="card-body">
+        {% if not users %}
+            <div class="alert alert-info">Нет пользователей для управления</div>
+        {% else %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Имя пользователя</th>
+                            <th>Email</th>
+                            <th>Текущая роль</th>
+                            <th>Дата регистрации</th>
+                            <th>Новая роль</th>
+                            <th>Действие</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                            <tr>
+                                <td>{{ user['id'] }}</td>
+                                <td>{{ user['username'] }}</td>
+                                <td>{{ user['email'] }}</td>
+                                <td>
+                                    <span class="badge {% if user['role'] == 'teacher' %}bg-primary{% else %}bg-info{% endif %}">
+                                        {{ 'Учитель' if user['role'] == 'teacher' else 'Ученик' }}
+                                    </span>
+                                </td>
+                                <td>{{ user['created_at'].split(' ')[0] }}</td>
+                                <td>
+                                    <form method="POST" action="{{ url_for('update_role', user_id=user['id']) }}" class="d-flex">
+                                        <select name="role" class="form-select form-select-sm me-2">
+                                            <option value="teacher" {% if user['role'] == 'teacher' %}selected{% endif %}>Учитель</option>
+                                            <option value="student" {% if user['role'] == 'student' %}selected{% endif %}>Ученик</option>
+                                        </select>
+                                        <button type="submit" class="btn btn-sm btn-success">
+                                            <i class="bi bi-check-lg"></i> Сохранить
+                                        </button>
+                                    </form>
+                                </td>
+                                <td>
+                                    <a href="#" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ user['id'] }}">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+
+                                    <!-- Delete Modal -->
+                                    <div class="modal fade" id="deleteModal{{ user['id'] }}" tabindex="-1">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Подтверждение удаления</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Вы уверены, что хотите удалить пользователя {{ user['username'] }}?
+                                                    <br><small class="text-muted">Это действие нельзя отменить.</small>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                                    <form method="POST" action="{{ url_for('delete_user', user_id=user['id']) }}">
+                                                        <button type="submit" class="btn btn-danger">Удалить</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
