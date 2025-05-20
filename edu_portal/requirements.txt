@@ -1,7 +1,7 @@
 flask
 gunicorn
 flask_socketio
-flask_werkzeug
+werkzeug 3.0.3
 os
 datetime
 SocketIO
