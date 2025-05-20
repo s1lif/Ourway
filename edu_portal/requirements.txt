@@ -2,5 +2,5 @@ flask
 gunicorn
 flask-socketio
 python-socketio
-werkzeug==3.0.3
+werkzeug==2.3.8
 datetime
