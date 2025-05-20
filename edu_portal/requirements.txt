@@ -1,7 +1,2 @@
 flask
 gunicorn
-sqlite3
-os
-flask_socketio
-datetime
-werkzeug.security
