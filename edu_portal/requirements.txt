@@ -2,4 +2,4 @@ flask
 gunicorn
 flask_socketio
 werkzeug
-sqlite3
+sqlite
