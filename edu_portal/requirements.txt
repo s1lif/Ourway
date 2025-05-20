@@ -1,8 +1,6 @@
 flask
-gunicorn
 Flask-SocketIO
 python-socketio==5.13.0
 werkzeug==2.3.8
-datetime
 Flask-SQLAlchemy
 Flask-Login
