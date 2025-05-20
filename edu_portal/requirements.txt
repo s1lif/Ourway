@@ -1,4 +1,5 @@
 flask
+gunicorn
 Flask-SocketIO
 python-socketio==5.13.0
 werkzeug==2.3.8
